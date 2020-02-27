@@ -7,7 +7,7 @@ class Order(models.Model):
 
 class Type(models.Model):
     name = models.CharField(max_length=50)
-    description = models.CharField(max_length=200, null=True)
+    description = models.CharField(max_length=200, null=True, blank=True)
     def __str__(self):
         return self.name
     
@@ -15,7 +15,7 @@ class Type(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=50)
     type_of = models.ForeignKey(Type, on_delete=models.PROTECT)
-    description = models.CharField(max_length=200, null=True)
+    description = models.CharField(max_length=200, null=True, blank=True)
     price = models.FloatField()
     orders = models.ManyToManyField(Order, through='Sale.Order_Product')
     def __str__(self):

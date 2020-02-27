@@ -23,7 +23,7 @@
                         <a class="nav-link" href="{% url 'index' %}"><b>Home</b></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><b>Manage</b></a>
+                        <a class="nav-link" href="{% url 'manage' %}"><b>Manage</b></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#"><b>Report</b></a>
@@ -31,12 +31,13 @@
                 </ul>
             </div>
             <div class="d-flex flex-row-reverse bd-highlight">
-                <div class="p-2 bd-highlight"><b>{% block showname %}{{ name }}{% endblock showname %}</b></div>
+                <div class="p-2 bd-highlight"><b><h4 class='d-inline'>Hello </h4>{% block showname %}{{ name }}{% endblock showname %}</b></div>
             </div>
             <div class="d-flex flex-row-reverse bd-highlight">
                 <div class="p-2 bd-highlight"><a href='{% url "logout" %}' class='text-dark'><b>Log out</b></a></div>
             </div>
         </nav>
+        <br>
     {% endblock bar %}
     {% block form %}{% endblock form %}
     {% block body %}{% endblock body %}
