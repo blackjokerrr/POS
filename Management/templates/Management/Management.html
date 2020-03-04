@@ -13,7 +13,7 @@ Manage
                 <select class="custom-select" id="inputGroupSelect04" aria-label="Example select with button addon"
                     name='type'>
                     <option selected>Type</option>
-                    {% for type in type %}
+                    {% for type in type_all %}
                         <option value='{{ type }}'>{{ type.name }}</option>
                     {% endfor %}
                 </select>

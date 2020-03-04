@@ -3,6 +3,10 @@ from django.http import HttpResponse
 from django.contrib.auth import logout, login, authenticate
 
 from django.contrib.auth.decorators import login_required
+from Sale.models import Order_Product
+from Management.models import Product
+
+# Login
 
 def Login(request):
     if request.method == 'POST':
@@ -25,3 +29,20 @@ def Logout(request):
 
 def go_login(request):
     return redirect('login/')
+
+
+# Home
+
+def showProduct(request):
+    product = Product.objects.all()
+    
+    if request.method == 'POST':
+        print(request)
+    
+    return render(request, 'index/index.html', context = {
+        'product': product,
+        'name': request.user.username
+    })
+    
+
+    
