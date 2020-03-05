@@ -4,7 +4,7 @@ from django.urls import path, include
 from Sale import views
 
 urlpatterns = [
-    path('index/', views.showProduct, name='index'),
-    path('index/#', views.showProduct, name='cart')
+    path('index/', views.Index, name='index'),
+    path('index/<int:key_of>', views.Index, name='cart')
     
 ]

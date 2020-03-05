@@ -33,16 +33,43 @@ def go_login(request):
 
 # Home
 
-def showProduct(request):
-    product = Product.objects.all()
+def Index(request, key_of=0):
+    product = Product.objects.all().order_by('pk')
+    cart, alert = {}, ''
     
     if request.method == 'POST':
-        print(request)
+        item = Product.objects.get(name__iexact=request.POST.get('get_product'))
+        amount = int(request.POST.get('amount'))
+        not_send = ''
+        
+        if amount > item.storage:
+            alert = 'In Storage have ' + str(item.storage)
+            not_send = request.POST.get('not_send')
+            amount = 0
+        
+        # Change
+        item.storage -= amount
+        item.save()
+        
+        # Delete
+        if item.storage <= 0:
+            item.delete()
+            
+
+        cart = {
+            'name': item.name,
+            'type': item.type_of,
+            'price': item.price * amount if amount != 0 else 1,
+            'amount': amount,
+            'not_send': not_send
+        }
     
     return render(request, 'index/index.html', context = {
         'product': product,
-        'name': request.user.username
+        'alert': alert,
+        'name': request.user.username,
+        'cart': cart,
+        'number_counter': key_of 
     })
-    
 
     
