@@ -4,7 +4,8 @@ from django.contrib.auth import logout, login, authenticate
 
 from django.contrib.auth.decorators import login_required
 from Sale.models import Order_Product
-from Management.models import Product
+from Management.models import Product, Order, Type
+
 
 # Login
 
@@ -47,15 +48,22 @@ def Index(request, key_of=0):
             not_send = request.POST.get('not_send')
             amount = 0
         
-        # Change
+        # Deduct item in storage
         item.storage -= amount
         item.save()
         
         # Delete
         if item.storage <= 0:
             item.delete()
-            
-
+        
+        #create order
+        o = Order(id_of_order='23233', total_price=item.price*amount)
+        o.save()
+        
+        order_product = Order_Product(order_id=o, product_id=item, amount=amount)
+        order_product.save()
+        
+        
         cart = {
             'name': item.name,
             'type': item.type_of,
@@ -72,4 +80,13 @@ def Index(request, key_of=0):
         'number_counter': key_of 
     })
 
+    
+def random():
+    listed_of_number = [[0, 1, 2], 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    number_random = ''
+    
+    for rb in listed_of_number[0]:
+        number_random += str(rb)
+        
+    return number_random
     

@@ -3,9 +3,10 @@ from django.db import models
 
 class Order(models.Model):
     date_time = models.DateField(auto_now=True)
+    id_of_order = models.CharField(max_length=6)
     total_price = models.DecimalField(max_digits=6, decimal_places=2)
     def __str__(self):
-        return str(self.date_time)
+        return str(self.date_time) + ' ID: ' + self.id_of_order
 
 class Type(models.Model):
     name = models.CharField(max_length=50)
