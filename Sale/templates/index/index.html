@@ -88,11 +88,34 @@ Sale
                     <hr>
                 </div>
                 <div class='border border-dark mb-4' style='height: 400px; overflow: auto;'>
-                    {% if cart.not_send == '' and cart.amount > 0 %}
-                        {{ cart.name }}
-                        {{ cart.type }}
-                        {{ cart.price }}
-                        {{ cart.amount }}
+                    {% if cart.not_send == '' %}
+                        <table class='table'>
+                            <tbody>
+                                {% for orders in cart.list_of_orders %}
+                                <tr>
+                                    <td>
+                                        {{ orders.0 }}
+                                    </td>
+                                    <td>
+                                        {{ orders.1 }}
+                                    </td>
+                                    <td>
+                                        {{ orders.2 }}
+                                    </td>
+                                    <td>
+                                        {{ orders.3 }}
+                                    </td>
+                                    <td>
+                                        <form action='{{ cart.number_page }}/delete' method='POST'>
+                                            {% csrf_token %}
+                                            <input type='hidden' value='{{ orders.0 }}' name='delete'>
+                                            <button class='btn btn-outline-danger'>delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     {% endif %}
                 </div>
                 <div class='text-center'>
@@ -103,4 +126,5 @@ Sale
         </div>
     </div>
 </div>
+
 {% endblock body %}
