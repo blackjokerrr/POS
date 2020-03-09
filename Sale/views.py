@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.contrib.auth import logout, login, authenticate
 
 from django.contrib.auth.decorators import login_required
-from Sale.models import Order_Product
+from Sale.models import Order_Product, Save_Product
 from Management.models import Product, Order, Type
 
 
@@ -36,8 +36,9 @@ def go_login(request):
 @login_required
 def Index(request, key_of=0):
     product = Product.objects.all().order_by('pk')
-    cart, alert = {}, ''
+    cart, alert, total = {}, '', 0
     storage_order_object = []
+    
     
     if request.method == 'POST':
         item = Product.objects.get(name__iexact=request.POST.get('get_product'))
@@ -66,7 +67,7 @@ def Index(request, key_of=0):
             order_product.save()
 
         
-        
+        #Same_order
         listed_order = []
         same_order = Order_Product.objects.filter(product_id__name__icontains=item.name)
         check_same_order = ''
@@ -96,8 +97,31 @@ def Index(request, key_of=0):
             'number_page': key_of
         }
         
-    
+        #Sum Price Order All
+        price_all = 0
+        
+        
+        if len(Order.objects.filter(total_all__gt=0)) == 0:
+            for price_of_order in Order_Product.objects.all():
+                price_all += (price_of_order.product_id.price * price_of_order.amount)
+            temp = Order.objects.create(total_price=price_all, total_all=price_all)
+            temp.save()
+            total = price_all
+            
+        elif len(Order.objects.filter(total_all__gt=0)) != 0:
+            for price_of_order in Order_Product.objects.all():
+                price_all += (price_of_order.product_id.price * price_of_order.amount)
+            total_order = Order.objects.filter(total_all__gt=0)[0]
+            total_order.total_all = price_all
+            total_order.save()
+            total = total_order.total_all
+        
+
+    #Show Order in Cart
     if request.method == 'GET' and Order_Product.objects.all() != None:
+        
+        if len(Order.objects.filter(total_all__gt=0)) != 0:
+            total = Order.objects.filter(total_all__gt=0)[0].total_all
         
         show = Order_Product.objects.all().order_by('amount')
         listed_show = []
@@ -114,10 +138,9 @@ def Index(request, key_of=0):
             'amount': 10,
             'not_send': '',
             'list_of_orders': listed_show,
-            'number_page': key_of
+            'number_page': key_of,
+            'price_total': total
         }
-        
-        
         
     
     return render(request, 'index/index.html', context = {
@@ -125,17 +148,45 @@ def Index(request, key_of=0):
         'alert': alert,
         'name': request.user.username,
         'cart': cart,
-        'number_counter': key_of 
+        'number_counter': key_of,
+        'price_total': total
     })
 
-    
+    #Delete Order
 def Delete(request, number_of_page):
     
     if request.method == 'POST':
+        subtract = Order.objects.filter(total_all__gt=0)[0]
         find_value = request.POST.get('delete')
         
         find_objects = Order_Product.objects.filter(product_id__name__icontains = find_value)
         
+        for items in find_objects:
+            subtract.total_all -= (items.product_id.price * items.amount)
+        subtract.save()
+        
         find_objects.delete()
+        
+    return redirect('/index/')
+
+
+
+def Save(request):
+    order_product = Order_Product.objects.all()
+    if len(order_product) != 0:
+        """for items_of_save in order_product:
+            save_order = Save_Product.objects.create(order_all=items_of_save)
+
+            save_order.save()"""
+        
+        save_order = Save_Product.objects.create(order_all=order_product[0])
+        
+
+        save_order.save()
+        
+        order = Order.objects.all()
+        order.delete()
+        
+        order_product.delete()
         
     return redirect('/index/')
