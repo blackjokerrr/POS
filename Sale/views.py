@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.contrib.auth import logout, login, authenticate
 
 from django.contrib.auth.decorators import login_required
-from Sale.models import Order_Product
+from Sale.models import Order_Product, Order_Product_Storage
 from Management.models import Product, Order, Type
 
 
@@ -106,7 +106,7 @@ def Index(request, key_of=0):
             temp = Order.objects.create(total_price=price_all, total_all=price_all)
             temp.save()
             total = price_all
-            print(total)
+            
             
         elif len(Order.objects.filter(total_all__gt=0)) != 0:
             for price_of_order in Order_Product.objects.all():
@@ -115,7 +115,7 @@ def Index(request, key_of=0):
             total_order.total_all = price_all
             total_order.save()
             total = total_order.total_all
-            print(total)
+            
             
     
         
@@ -165,7 +165,6 @@ def Delete(request, number_of_page):
         find_value = request.POST.get('delete')
         
         find_objects = Order_Product.objects.filter(product_id__name__icontains = find_value)
-        print(find_objects)
         
         for items in find_objects:
             subtract.total_all -= (items.product_id.price * items.amount)
@@ -173,4 +172,25 @@ def Delete(request, number_of_page):
 
         find_objects.delete()
         
+    return redirect('/index/')
+
+
+# Save Order and Product
+def Save(request):
+    
+    if request.method == 'POST':
+        save_order = Order_Product.objects.all()
+        price_all = Order.objects.filter(total_all__gt=0)[0].total_all
+        
+        for items in save_order:
+            product = items.product_id
+            order = items.order_id
+            
+            s = Order_Product_Storage.objects.create(storage_order=order, storage_product=product, storage_price_all=product.price * items.amount , storage_amount_all=items.amount)
+            s.save()
+        
+        price_all = Order.objects.filter(total_all__gt=0)
+        price_all.delete()
+        save_order.delete()
+
     return redirect('/index/')

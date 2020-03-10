@@ -24,3 +24,6 @@ class Product(models.Model):
     orders = models.ManyToManyField(Order, through='Sale.Order_Product')
     def __str__(self):
         return self.name
+
+
+
