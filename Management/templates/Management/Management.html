@@ -5,53 +5,277 @@ Manage
 {% endblock title %}
 
 {% block body %}
+
 <div class='container'>
+
     <form action='{% url "manage" %}' method='POST'>
         {% csrf_token %}
-        <div class="input-group mb-3 w-50">
-            <div class="input-group-prepend">
-                <select class="custom-select" id="inputGroupSelect04" aria-label="Example select with button addon"
-                    name='type'>
-                    <option selected>Type</option>
-                    {% for type in type_all %}
-                        <option value='{{ type }}'>{{ type.name }}</option>
-                    {% endfor %}
-                </select>
+        <input class='form-control w-25 d-inline' type='text' placeholder='Search' name='search'>
+        <select class="custom-select w-25 btn" id="inputGroupSelect04" aria-label="Example select with button addon" name='choose_type'>
+            <option selected value='0'>Type</option>
+            {% for type_items in type %}
+            <option value="{{ type_items.name }}">{{ type_items.name }}</option>
+            {% endfor %}
+        </select>
+        <button class="btn btn-outline-primary my-2 my-sm-0 ml-1 mr-3" type='submit'>Search</button>
+    
+    <button type="button" class="btn btn-primary mr-1" data-toggle="modal"
+        data-target="#add_product">เพิ่มสินค้า</button>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add_type">เพิ่มประเภทสินค้า</button>
+    </form>
+
+    <form action='{% url "add_product" %}' method='POST'>
+        {% csrf_token %}
+        <div class="modal fade" id="add_product" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">เพิ่มสินค้า</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>ชื่อสินค้า</label>
+                                <input type="text" class="form-control" name='name' required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>ราคาสินค้า</label>
+                                <input type="number" class="form-control w-50" name='price' value='0' min='0' step='any'
+                                    required>
+                            </div>
+                        </div>
+                        <div class='form-row'>
+                            <div class="form-group col-6">
+                                <label>ประเภท</label><br>
+                                <select class='custom-select w-50' name='type'>
+                                    <option selected>Type</option>
+                                    {% for add_items in  type %}
+                                    <option>{{ add_items }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group col-6">
+                                <label>จำนวนสินค้าในร้านค้า</label>
+                                <input type="number" class="form-control w-50" name='storage' value='0' min='0'
+                                    required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">ปิด</button>
+                        <button type="submit" class="btn btn-primary">บันทึก</button>
+                    </div>
+                </div>
             </div>
-            <input type="text" class="form-control" aria-label="Text input with dropdown button" name='add'>
-            <input type='number' class='form-control w-25' name='price' value='0'>
-            <button type='submit' class='btn my-2 my-sm-0 btn-outline-primary d-inline mx-sm-3 mb-2'>ADD</button>
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                Add Type
-            </button>
         </div>
     </form>
-</div>
 
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Input Your Type</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+    <form action='{% url "add_type" %}' method='POST'>
+        {% csrf_token %}
+        <div class="modal fade" id="add_type" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">เพิ่มประเภทสินค้า</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="col-form-label">ประเภทของสินค้า</label>
+                            <input type="text" class="form-control w-50" name='add_type' required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">ปิด</button>
+                        <button type="submit" class="btn btn-primary">บันทึก</button>
+                    </div>
+                </div>
             </div>
-            <form method='GET' action='#'>
-                <div class="modal-body">
-                    <input type='text' class='form-control' name='add_type'>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
-                </div>
-            </form>
         </div>
-    </div>
-</div>
+    </form>
 
-{{ value }}
-{{ food }}
-{{ price }}
-{% endblock body %}
+    <div class='container border border-dark mt-3' style='height: 600px; overflow: auto'>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if search|length == 0 %}
+                    {% for items in product %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ items.name|capfirst }}</td>
+                        <td>{{ items.type_of }}</td>
+                        <td>{{ items.price }}</td>
+                        <td>
+                            <button class='btn btn-outline-primary' data-toggle="modal"
+                                data-target="#{{ items.name }}">แก้ไขสินค้า</button>
+                            <button class='btn btn-outline-primary' data-toggle="modal"
+                                data-target="#{{ items.name }}_">แก้ไขประเภทสินค้า</button>
+                        </td>
+                        <td>
+                            <form action='{% url "delete" %}' method='POST'>
+                                {% csrf_token %}
+                                <input type='hidden' name='index' value='{{ items.name }}'>
+                                <button class='btn btn-outline-danger'>ลบ</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <form action='{% url "change_product" %}' method='POST'>
+                        {% csrf_token %}
+                        <div class="modal fade" id="{{ items.name }}" tabindex="-1" role="dialog"
+                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">แก้ไขสินค้า</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <input type='hidden' name='find_value' value='{{ items.name }}'>
+                                    <div class="modal-body">
+                                        <label>Name of product</label><br>
+                                        <input type='text' class='mt-1 form-control w-50' name='change_name_of_product'><br>
+                                        <label class='mt-1'>Price</label><br>
+                                        <input type='number' value='0' class='form-control w-25'
+                                            name='change_price_of_product'>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <form action='{% url "change_type" %}' method='POST'>
+                        {% csrf_token %}
+                        <div class="modal fade" id="{{ items.name }}_" tabindex="-1" role="dialog"
+                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">แก้ไขประเภทสินค้า</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <label>Type</label><br>
+                                        <select class='custom-select w-25' name='select'>
+                                            <option selected>Type</option>
+                                            {% for items_of_type in type %}
+                                            <option value='{{ items_of_type }}'>{{ items_of_type }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <input type='hidden' value='{{ items.name }}' name='find_value'>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    {% endfor %}
+                {% else %}
+                    {% for items in search %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ items.name|capfirst }}</td>
+                        <td>{{ items.type_of }}</td>
+                        <td>{{ items.price }}</td>
+                        <td>
+                            <button class='btn btn-outline-primary' data-toggle="modal"
+                                data-target="#{{ items.name }}">แก้ไขสินค้า</button>
+                            <button class='btn btn-outline-primary' data-toggle="modal"
+                                data-target="#{{ items.name }}_">แก้ไขประเภทสินค้า</button>
+                        </td>
+                        <td>
+                            <form action='{% url "delete" %}' method='POST'>
+                                {% csrf_token %}
+                                <input type='hidden' name='index' value='{{ items.name }}'>
+                                <button class='btn btn-outline-danger'>ลบ</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <form action='{% url "change_product" %}' method='POST'>
+                        {% csrf_token %}
+                        <div class="modal fade" id="{{ items.name }}" tabindex="-1" role="dialog"
+                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">แก้ไขสินค้า</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <input type='hidden' name='find_value' value='{{ items.name }}'>
+                                    <div class="modal-body">
+                                        <label>Name of product</label><br>
+                                        <input type='text' class='mt-1 form-control w-50' name='change_name_of_product'><br>
+                                        <label class='mt-1'>Price</label><br>
+                                        <input type='number' value='0' class='form-control w-25'
+                                            name='change_price_of_product'>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <form action='{% url "change_type" %}' method='POST'>
+                        {% csrf_token %}
+                        <div class="modal fade" id="{{ items.name }}_" tabindex="-1" role="dialog"
+                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">แก้ไขประเภทสินค้า</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <label>Type</label><br>
+                                        <select class='custom-select w-25' name='select'>
+                                            <option selected>Type</option>
+                                            {% for items_of_type in type %}
+                                            <option value='{{ items_of_type }}'>{{ items_of_type }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <input type='hidden' value='{{ items.name }}' name='find_value'>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+
+    {% endblock body %}

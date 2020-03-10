@@ -144,8 +144,7 @@ def Index(request, key_of=0):
             'price_total': total
         }
         
-        
-        
+
     
     return render(request, 'index/index.html', context = {
         'product': product,
