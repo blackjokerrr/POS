@@ -57,16 +57,15 @@ Sale
                                                 <td>{{ forloop.counter }}</td>
                                                 <td>
                                                     {{ pr.name|capfirst }}
-                                                    <input type='hidden' name='get_product' value='{{ pr.name }}'>
+                                                    <input type='hidden'  name='get_product' value='{{ pr.name }}'>
                                                 </td>
                                                 <td>{{ pr.type_of }}</td>
                                                 <td>{{ pr.price }}</td>
                                                 <td>{{ pr.storage }}</td>
-                                                <td><input type='number' class='form-control w-50' value='0'
-                                                        name='amount' min='0'>
+                                                <td><input type='number' class='form-control w-50' value='0' name = 'amount' min='0'>
                                                     {% if alert != '' and forloop.counter == number_counter %}
-                                                    <p class='mt-2'>{{ alert }}</p>
-                                                    <input type='hidden' name='not_send' value='0'>
+                                                        <p class='mt-2'>{{ alert }}</p>
+                                                        <input type='hidden' name='not_send' value='0'>
                                                     {% endif %}
                                                 </td>
                                                 <td><button type="submit" class="btn btn-outline-success">add</button>
@@ -90,33 +89,33 @@ Sale
                 </div>
                 <div class='border border-dark mb-4' style='height: 400px; overflow: auto;'>
                     {% if cart.not_send == '' %}
-                    <table class='table'>
-                        <tbody>
-                            {% for orders in cart.list_of_orders %}
-                            <tr>
-                                <td>
-                                    {{ orders.0 }}
-                                </td>
-                                <td>
-                                    {{ orders.1 }}
-                                </td>
-                                <td>
-                                    {{ orders.2 }}
-                                </td>
-                                <td>
-                                    {{ orders.3 }}
-                                </td>
-                                <td>
-                                    <form action='{{ cart.number_page }}/delete' method='POST'>
-                                        {% csrf_token %}
-                                        <input type='hidden' value='{{ orders.0 }}' name='delete'>
-                                        <button class='btn btn-outline-danger'>delete</button>
-                                    </form>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                        <table class='table'>
+                            <tbody>
+                                {% for orders in cart.list_of_orders %}
+                                <tr>
+                                    <td>
+                                        {{ orders.0 }}
+                                    </td>
+                                    <td>
+                                        {{ orders.1 }}
+                                    </td>
+                                    <td>
+                                        {{ orders.2 }}
+                                    </td>
+                                    <td>
+                                        {{ orders.3 }}
+                                    </td>
+                                    <td>
+                                        <form action='{{ cart.number_page }}/delete' method='POST'>
+                                            {% csrf_token %}
+                                            <input type='hidden' value='{{ orders.0 }}' name='delete'>
+                                            <button class='btn btn-outline-danger'>delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     {% endif %}
                 </div>
                 <div>
@@ -125,12 +124,7 @@ Sale
                             <h3><b>Total: {{ price_total }}</b></h3>
                         </div>
                     </div>
-                    <div class='text-center'>
-                        <form action='{% url "save" %}' method='POST'>
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-primary rounded-pil mt-3 mb-3">Sale</button>
-                        </form>
-                    </div>
+                    
                 </div>
             </div>
         </div>

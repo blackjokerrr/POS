@@ -17,7 +17,7 @@ class Type(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=50)
-    type_of = models.ForeignKey(Type, on_delete=models.CASCADE)
+    type_of = models.ForeignKey(Type, on_delete=models.PROTECT)
     description = models.CharField(max_length=200, null=True, blank=True)
     price = models.DecimalField(max_digits=6, decimal_places=2)
     storage = models.SmallIntegerField()
