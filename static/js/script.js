@@ -66,7 +66,7 @@ let show_day = new Chart(charts, {
 });
 
 
-let show_month = new Chart(charts_week, {
+let show_week = new Chart(charts_week, {
     type: 'bar',
     data: {
         labels: product_name,
@@ -107,10 +107,23 @@ let show_month = new Chart(charts_week, {
 });
 
 
-let show_year = new Chart(charts_month, {
-    type: 'bar',
+let show_month = new Chart(charts_month, {
+    type: 'line',
     data: {
-        labels: product_name,
+        labels: [
+            'Jan',
+            'Feb',
+            'Mar',
+            'April',
+            'May',
+            'Jun',
+            'Jul',
+            'Aug',
+            'Sep',
+            'Oct',
+            'Nov',
+            'Dec'
+        ],
         datasets: [{
             barPercentage: 1.0,
             label: 'สินค้าที่นิยมซื้อมากที่สุด',
@@ -148,7 +161,7 @@ let show_year = new Chart(charts_month, {
 });
 
 
-let Show_pop = new Chart(charts_year, {
+let show_year = new Chart(charts_year, {
     type: 'bar',
     data: {
         labels: product_name,

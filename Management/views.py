@@ -95,17 +95,19 @@ def Delete(request):
 def Add_product(request):
     
     if request.method == 'POST':
-        
-        name = request.POST.get('name')
-        
-        type_of_product = request.POST.get('type')
-        get_type = Type.objects.get(name__iexact=type_of_product)
-        
-        price = request.POST.get('price')
-        storage = request.POST.get('storage')
-        
-        create_product = Product.objects.create(name=name, type_of=get_type, price=price, storage=storage)
-        create_product.save()
+        try:
+            name = request.POST.get('name')
+            
+            type_of_product = request.POST.get('type')
+            get_type = Type.objects.get(name__iexact=type_of_product)
+            
+            price = request.POST.get('price')
+            storage = request.POST.get('storage')
+
+            create_product = Product.objects.create(name=name, type_of=get_type, price=price, storage=storage)
+            create_product.save()
+        except:
+            print('Error')
 
         
         

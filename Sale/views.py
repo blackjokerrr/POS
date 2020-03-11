@@ -38,9 +38,35 @@ def Index(request, key_of=0):
     product = Product.objects.all().order_by('pk')
     cart, alert, total = {}, '', 0
     storage_order_object = []
+    type_of_product = Type.objects.all()
+    set_of_search = []
 
+    if request.method == 'POST' and request.POST.get('search') != None and request.POST.get('choose_type') != None:
+        search_items = request.POST.get('search')
+        choose_type = request.POST.get('choose_type')
+        
+        print(search_items)
+        print(choose_type)
+             
+        set_type = Product.objects.filter(type_of__name__icontains=choose_type)
+            
+        set_of_name = Product.objects.filter(name__icontains=search_items)
+            
+        if len(set_type) != 0 and len(set_of_name) == 0:
+            set_of_search = set_type
+                
+        elif len(set_type) == 0 and len(set_of_name) != 0:
+            set_of_search = set_of_name
+                
+        elif len(set_type) != 0 and len(set_of_name) != 0:
+            for checker in set_type:
+                if checker in set_of_name:
+                    set_of_search.append(checker)
+        
+        
     
-    if request.method == 'POST':
+    
+    if request.method == 'POST' and request.POST.get('search') == None and request.POST.get('choose_type') == None:
         item = Product.objects.get(name__iexact=request.POST.get('get_product'))
         amount = int(request.POST.get('amount'))
         not_send = ''
@@ -120,7 +146,7 @@ def Index(request, key_of=0):
     
         
     #Show Product in Cart
-    if request.method == 'GET' and Order_Product.objects.all() != None:
+    if Order_Product.objects.all() != None:
         
         if len(Order.objects.filter(total_all__gt=0)) != 0:
             total = Order.objects.filter(total_all__gt=0)[0].total_all
@@ -143,6 +169,8 @@ def Index(request, key_of=0):
             'number_page': key_of,
             'price_total': total
         }
+    
+    
         
 
     
@@ -152,7 +180,9 @@ def Index(request, key_of=0):
         'name': request.user.username,
         'cart': cart,
         'number_counter': key_of,
-        'price_total': total
+        'price_total': total,
+        'type': type_of_product,
+        'search': set_of_search
     })
 
     
@@ -178,9 +208,11 @@ def Delete(request, number_of_page):
 def Save(request):
     
     if request.method == 'POST':
-        save_order = Order_Product.objects.all()
-        price_all = Order.objects.filter(total_all__gt=0)[0].total_all
-        
+        try:
+            save_order = Order_Product.objects.all()
+            price_all = Order.objects.filter(total_all__gt=0)[0].total_all
+        except:
+            print('Error')
         for items in save_order:
             product = items.product_id
             order = items.order_id
