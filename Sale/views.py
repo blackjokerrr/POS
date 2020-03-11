@@ -19,11 +19,6 @@ def Login(request):
 
     return render(request, 'login/login.html')
 
-@login_required
-def index(request):
-    return render(request, 'index/index.html', context = {'name': request.user.username})
-
-
 def Logout(request):
     logout(request)
     return redirect('/login')
@@ -185,7 +180,7 @@ def Index(request, key_of=0):
         'search': set_of_search
     })
 
-    
+@login_required    
 #Delete Order
 def Delete(request, number_of_page):
     
@@ -203,7 +198,7 @@ def Delete(request, number_of_page):
         
     return redirect('/index/')
 
-
+@login_required
 # Save Order and Product
 def Save(request):
     

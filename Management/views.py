@@ -2,10 +2,11 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 
 from Management.models import Product, Type
+from django.contrib.auth.decorators import login_required
 
 
 
-
+@login_required
 def manage(request):
     
     product = Product.objects.all().order_by('pk')
@@ -42,7 +43,7 @@ def manage(request):
         'search': set_of_search
     })
     
-    
+@login_required
 def Change_product(request):
     
     if request.method == 'POST':
@@ -60,7 +61,7 @@ def Change_product(request):
     
     return redirect('/manage/')
 
-
+@login_required
 def Change_type(request):
     
     if request.method == 'POST':
@@ -78,7 +79,7 @@ def Change_type(request):
         
     return redirect('/manage/')
         
-        
+@login_required      
 def Delete(request):
     
     if request.method == 'POST':
@@ -91,7 +92,7 @@ def Delete(request):
         
     return redirect('/manage/')
 
-
+@login_required
 def Add_product(request):
     
     if request.method == 'POST':

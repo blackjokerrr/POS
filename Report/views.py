@@ -4,10 +4,12 @@ from django.http import HttpResponse
 
 from Sale.models import Order_Product, Order_Product_Storage
 from Management.models import Product, Order
+from django.contrib.auth.decorators import login_required
 
 from datetime import *
 # Create your views here.
 
+@login_required
 def report(request):
     
     temp_total = 0
@@ -51,7 +53,6 @@ def report(request):
         except:
             print('Error')
         
-        print(month)
         
         for items_month in month:
             
@@ -70,11 +71,6 @@ def report(request):
             total_year += (items_year.storage_product.price * items_year.storage_amount_all)
         
     
-    
-
-
-    
-
     
     return render(request, 'Report/report.html', context={
         'name': request.user.username,
