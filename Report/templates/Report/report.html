@@ -41,56 +41,40 @@ Report
 
         <div class="tab-content border border-dark mb-3 container" id="pills-tabContent">
             <div class="tab-pane fade show active" id="data-day" role="tabpanel" aria-labelledby="data-day-tag">
-                <p class='d-none' id='total_product'>{{ product_name|length }}</p>
-                {% for items in product_name %}
-                    <p class='d-none' id='{{ forloop.counter }}'>{{ items }}</p>
-                {% endfor %}
-                {% for dict_items in total_item %}
-                    <p class='d-none' id='t{{ forloop.counter }}'> {{ dict_items }} </p>
-                {% endfor %}                
+                <p class='d-none' id='count'>{{ count_order }}</p>
+                <p class='d-none' id='date'>{{ current_day }}</p>    
                 
                 <div class='container'>
                     <canvas id='Charts'></canvas>
                 </div>
+                <p>ยอดขายทั้งหมดในวันนี้ : {{ total_of_day }}</P>
             </div>
             <div class="tab-pane fade" id="data-week" role="tabpanel" aria-labelledby="data-week-tag">
-                <p class='d-none' id='total_product'>{{ product_name|length }}</p>
-                {% for items in product_name %}
-                    <p class='d-none' id='{{ forloop.counter }}'>{{ items }}</p>
-                {% endfor %}
-                {% for dict_items in total_item %}
-                    <p class='d-none' id='t{{ forloop.counter }}'> {{ dict_items }} </p>
-                {% endfor %}                
-
+                <p class='d-none' id='start_week'>{{ show_week }}</p>
+                <p class='d-none' id='total'>{{ total_week }}</p>
+                <p class='d-none' id='end_week'>{{ end_week }}</p> 
+                <p class='d-none' id='result'>{{ result }}</p>
+                
                 <div class='container'>
                     <canvas id='Charts_week'></canvas>
                 </div>
+                <p>ยอดขายทั้งหมดในสัปดาห์นี้ : {{ total_week }}</P>
             </div>
             <div class="tab-pane fade" id="data-month" role="tabpanel" aria-labelledby="data-month-tag">
-                <p class='d-none' id='total_product'>{{ product_name|length }}</p>
-                {% for items in product_name %}
-                    <p class='d-none' id='{{ forloop.counter }}'>{{ items }}</p>
-                {% endfor %}
-                {% for dict_items in total_item %}
-                    <p class='d-none' id='t{{ forloop.counter }}'> {{ dict_items }} </p>
-                {% endfor %}                
+                <p class='d-none' id='count_month'>{{ count_month }}</p>
 
                 <div class='container'>
                     <canvas id='Charts_month'></canvas>
                 </div>
+                <p>ยอดขายทั้งหมดในเดือนนี้ : {{ total_month }}</P>
             </div>
             <div class="tab-pane fade" id="data-year" role="tabpanel" aria-labelledby="data-year-tag">
-                <p class='d-none' id='total_product'>{{ product_name|length }}</p>
-                {% for items in product_name %}
-                    <p class='d-none' id='{{ forloop.counter }}'>{{ items }}</p>
-                {% endfor %}
-                {% for dict_items in total_item %}
-                    <p class='d-none' id='t{{ forloop.counter }}'> {{ dict_items }} </p>
-                {% endfor %}                
+                <p class='d-none' id='count_year'>{{ count_year }}</p>
 
                 <div class='container'>
                     <canvas id='Charts_year'></canvas>
                 </div>
+                <p>ยอดขายทั้งหมดในปีนี้ : {{ total_year }}</P>
             </div>
         </div>
     </div>

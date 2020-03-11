@@ -5,34 +5,88 @@ from django.http import HttpResponse
 from Sale.models import Order_Product, Order_Product_Storage
 from Management.models import Product, Order
 
+from datetime import *
 # Create your views here.
 
 def report(request):
     
-    name_all = Product.objects.all()
-    product_out = Order_Product_Storage.objects.all()
-    listed_value, check_same_name = [], ''
-    check_listed, total = [], 0
-    dict_of_sum = {}
-    temp = []
+    temp_total = 0
+    get_date = datetime.now()
+    current = get_date.strftime('%Y-%m-%d')
+    current_use = current.split('-')
     
-    for value_of_sum in product_out:
-        if value_of_sum.storage_product.name not in check_listed:
-            check_listed.append(value_of_sum.storage_product.name)
-            dict_of_sum[value_of_sum.storage_product.name] = value_of_sum.storage_amount_all
-        else:
-            dict_of_sum[value_of_sum.storage_product.name] += value_of_sum.storage_amount_all
+    objects_week, month = '', ''
+    start_date = ''
+    total_week, total_month, total_year = 0, 0, 0
+    
+    try:
+        get_order = Order_Product_Storage.objects.filter(storage_order__date_time__exact=current)
+        start_date = Order_Product_Storage.objects.all().order_by('pk')[0].storage_order.date_time
+    except:
+        print('Error')
+        
+    week = str(start_date).split('-')
+    to_week = date(int(week[0]), int(week[1]), int(week[2]) + 7)
+    start_week = date(int(week[0]), int(week[1]), int(week[2]))
+    
+
+    for value_of_sum in get_order:
+        temp_total += (value_of_sum.storage_product.price * value_of_sum.storage_amount_all)
+        
+    if date(int(current_use[0]), int(current_use[1]), int(current_use[2])) <= to_week and start_week <= date(int(current_use[0]), int(current_use[1]), int(current_use[2])):
+        try:
+            objects_week = Order_Product_Storage.objects.filter(storage_order__date_time__gte=start_week, storage_order__date_time__lte=to_week)
+        except:
+            print('Error')
+        
+        for items_week in objects_week:
+            
+            total_week += (items_week.storage_product.price * items_week.storage_amount_all)
+    
+    to_month = date(int(week[0]), int(week[1]) + 1, int(week[2]))
+    
+    if date(int(current_use[0]), int(current_use[1]), int(current_use[2])) <= to_month and start_week <= date(int(current_use[0]), int(current_use[1]), int(current_use[2])):
+        try:
+            month = Order_Product_Storage.objects.filter(storage_order__date_time__gte=start_week, storage_order__date_time__lte=to_month)
+        except:
+            print('Error')
+        
+        print(month)
+        
+        for items_month in month:
+            
+            total_month += (items_month.storage_product.price * items_month.storage_amount_all)
+            
+    to_year = date(int(week[0]) + 1, int(week[1]), int(week[2]))
+    
+    if date(int(current_use[0]), int(current_use[1]), int(current_use[2])) <= to_month and start_week <= date(int(current_use[0]), int(current_use[1]), int(current_use[2])):
+        try:
+            year = Order_Product_Storage.objects.filter(storage_order__date_time__gte=start_week, storage_order__date_time__lte=to_month)
+        except:
+            print('Error')
+            
+        for items_year in year:
+            
+            total_year += (items_year.storage_product.price * items_year.storage_amount_all)
+        
     
     
-    for dict_items in check_listed:
-        temp.append(dict_of_sum[dict_items])
+
 
     
 
     
     return render(request, 'Report/report.html', context={
         'name': request.user.username,
-        'product_sum_all': dict_of_sum,
-        'product_name': check_listed,
-        'total_item': temp
+        'total_of_day': temp_total,
+        'current_day': current,
+        'count_order': len(get_order),
+        'show_week': start_week,
+        'total_week': total_week,
+        'end_week': to_week,
+        'result': len(objects_week),
+        'total_month': total_month,
+        'count_month': len(month),
+        'total_year': total_year,
+        'count_year': len(year)
     })
