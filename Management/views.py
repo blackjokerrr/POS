@@ -10,19 +10,28 @@ def manage(request):
     
     product = Product.objects.all().order_by('pk')
     type_of_product = Type.objects.all()
-    set_of_search = {}
+    set_of_search = []
     
     if request.method == 'POST':
         
         if request.POST.get('search') != '' or request.POST.get('choose_type') != '0':
             search_items = request.POST.get('search')
             choose_type = request.POST.get('choose_type')
-            
+             
             set_type = Product.objects.filter(type_of__name__icontains=choose_type)
-            set_of_name = Product.objects.filter(name__icontains=search_items)
-            print(set_of_name)
             
-            set_of_search = set_type if len(set_type) != 0 else set_of_name
+            set_of_name = Product.objects.filter(name__icontains=search_items)
+            
+            if len(set_type) != 0 and len(set_of_name) == 0:
+                set_of_search = set_type
+                
+            elif len(set_type) == 0 and len(set_of_name) != 0:
+                set_of_search = set_of_name
+                
+            elif len(set_type) != 0 and len(set_of_name) != 0:
+                for checker in set_type:
+                    if checker in set_of_name:
+                        set_of_search.append(checker)
             
     
     
